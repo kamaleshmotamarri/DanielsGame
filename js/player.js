@@ -36,7 +36,17 @@ function resetPlayer(spawnX, spawnY) {
         player.jumpForce = 1;
     }
 
-    player.health = player.maxHealth;
+    if (gameMode === 'god') {
+        player.maxHealth = 5;
+        if (currentLevel === 0 || !player.health || player.health <= 0) {
+            player.health = 5;
+        } else {
+            if (player.health > 5) player.health = 5;
+        }
+    } else {
+        player.health = player.maxHealth;
+    }
+
     player.invincible = 0;
     player.onGround = false;
     player.jumpCount = 0;

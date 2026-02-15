@@ -13,6 +13,7 @@ function gameLoop() {
 }
 
 // Initial load and show title screen
+setActiveWorld(selectedWorldId);
 loadLevel(0);
 showScreen('titleScreen');
 gameLoop();

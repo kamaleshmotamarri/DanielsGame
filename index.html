@@ -8,91 +8,203 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body class="theme-core">
     <div id="gameContainer">
         <canvas id="game"></canvas>
+        <div class="scanlines"></div>
 
         <!-- Title Screen -->
         <div id="titleScreen" class="screen-overlay">
-            <h1>CHRONOQUEST</h1>
-            <div class="subtitle">MASTER TIME • SAVE THE TIMELINE</div>
-            <button class="menu-btn" onclick="showCharacterSelect()">NEW GAME</button>
-            <button class="menu-btn secondary" onclick="showControls()">HOW TO PLAY</button>
-            <div class="version-tag">v1.0.0 | © 2025</div>
+            <div class="title-hero">
+                <div class="title-accent title-accent-top"></div>
+                <h1 class="title-main">
+                    <span class="title-word">CHRONOQUEST</span>
+                </h1>
+                <div class="subtitle-block">
+                    <span class="subtitle-line">MASTER TIME</span>
+                    <span class="subtitle-divider">
+                        <span class="subtitle-dot"></span>
+                    </span>
+                    <span class="subtitle-line">SAVE THE TIMELINE</span>
+                </div>
+                <div class="title-accent title-accent-bottom"></div>
+            </div>
+            <p class="title-lead">Stabilize fractured timelines across multiple worlds and bring reality back online.</p>
+
+            <div class="menu-options menu-stack">
+                <button class="menu-btn" onclick="showModeSelect()">NEW MISSION</button>
+                <button class="menu-btn" onclick="showLevelBuilder()">LEVEL BUILDER</button>
+                <button class="menu-btn secondary" onclick="showControls()">SYSTEM ARCHIVES</button>
+            </div>
+
+            <div class="title-meta">
+                <div class="meta-chip">3 GAME WORLDS</div>
+                <div class="meta-chip">18 TOTAL LEVELS</div>
+                <div class="meta-chip">6 PLAYABLE AGENTS</div>
+            </div>
+
+            <div class="version-tag">VER 2.0.0 | PROTOCOL: MULTIVERSE</div>
+        </div>
+
+        <!-- Game Mode Screen -->
+        <div id="modeScreen" class="screen-overlay hidden">
+            <h1>CHRONO FLOW</h1>
+            <div class="subtitle">CHOOSE YOUR TEMPORAL DIFFICULTY</div>
+            <div class="mode-container">
+                <div class="mode-card" onclick="selectMode('normal')">
+                    <h2>RECRUIT</h2>
+                    <p>Standard timeline stability. Energy resets every jump with full health restore.</p>
+                </div>
+                <div class="mode-card master" onclick="selectMode('master')">
+                    <h2>GUARDIAN</h2>
+                    <p>Quantum collapse. One fracture ends the mission and forces a full reset.</p>
+                </div>
+                <div class="mode-card god" onclick="selectMode('god')">
+                    <h2>ENTITY</h2>
+                    <p>5 lives with persistent health between levels for long-form survival runs.</p>
+                </div>
+            </div>
+            <button class="menu-btn secondary" onclick="quitToMenu()">ABORT</button>
+        </div>
+
+        <!-- World Selection Screen -->
+        <div id="worldScreen" class="screen-overlay hidden">
+            <h1>WORLD ARCHIVE</h1>
+            <div class="subtitle">SELECT A TIMELINE CLUSTER</div>
+            <div id="worldGrid" class="world-grid"></div>
+            <button class="menu-btn secondary" onclick="showModeSelect()">BACK TO DIFFICULTY</button>
         </div>
 
         <!-- Story Screen -->
         <div id="storyScreen" class="screen-overlay hidden">
+            <h1>THE MISSION</h1>
             <div class="story-text">
                 The year is 2157. A catastrophic experiment at the <span>Temporal Research Institute</span>
-                has shattered the timeline, creating rifts across history.<br><br>
-                You are <span>Agent Zero</span>, the last Chrono Guardian. Armed with experimental
-                <span>time manipulation technology</span>, you must travel through the ages to collect
-                <span>Temporal Fragments</span> and restore the timeline before reality collapses.<br><br>
-                The fate of all existence rests in your hands.
+                has shattered reality into unstable world clusters.<br><br>
+                Your active deployment zone is <span id="storyWorldName">CHRONOS CORE</span>.<br>
+                <span id="storyWorldDesc">Play every existing level from Prehistoric Era to Temporal Nexus.</span><br><br>
+                Collect fragments, seal anomalies, and synchronize the timeline before collapse becomes permanent.
             </div>
-            <button class="menu-btn" onclick="startGame()">BEGIN MISSION</button>
+            <div class="story-actions">
+                <button class="menu-btn" onclick="startGame()">INITIATE JUMP</button>
+                <button class="menu-btn secondary" onclick="showCharacterSelect()">CHANGE AGENT</button>
+            </div>
         </div>
 
-        <!-- Controls Screen -->
+        <!-- Controls / Archives Screen -->
         <div id="controlsScreen" class="screen-overlay hidden">
-            <div class="controls-box" style="min-width: 400px;">
-                <h3>CONTROLS</h3>
-                <div class="control-row">
-                    <span>Move</span>
-                    <span><span class="control-key">A</span><span class="control-key">D</span> or <span
-                            class="control-key">←</span><span class="control-key">→</span></span>
+            <h1>SYSTEM ARCHIVES</h1>
+            <div class="archives-layout">
+                <div class="controls-box">
+                    <h3>CORE CONTROLS</h3>
+                    <div class="control-row">
+                        <span>Lateral Movement</span>
+                        <span><span class="control-key">A</span><span class="control-key">D</span> or <span
+                                class="control-key">←</span><span class="control-key">→</span></span>
+                    </div>
+                    <div class="control-row">
+                        <span>Vertical Propulsion</span>
+                        <span><span class="control-key">W</span> or <span class="control-key">SPACE</span></span>
+                    </div>
+                    <div class="control-row">
+                        <span>Temporal Dilation</span>
+                        <span><span class="control-key">SHIFT</span></span>
+                    </div>
+                    <div class="control-row">
+                        <span>Chronal Reversion</span>
+                        <span><span class="control-key">R</span></span>
+                    </div>
+                    <div class="control-row">
+                        <span>Pause Pulse</span>
+                        <span><span class="control-key">ESC</span></span>
+                    </div>
                 </div>
-                <div class="control-row">
-                    <span>Jump</span>
-                    <span><span class="control-key">W</span> or <span class="control-key">SPACE</span></span>
-                </div>
-                <div class="control-row">
-                    <span>Time Slow</span>
-                    <span><span class="control-key">SHIFT</span></span>
-                </div>
-                <div class="control-row">
-                    <span>Time Rewind</span>
-                    <span><span class="control-key">R</span></span>
-                </div>
-                <div class="control-row">
-                    <span>Pause</span>
-                    <span><span class="control-key">ESC</span></span>
+
+                <div class="archives-side">
+                    <div class="archives-card">
+                        <h3>COLLECTIBLES</h3>
+                        <p><strong>Orbs:</strong> Standard score pickups.</p>
+                        <p><strong>Gems:</strong> High value fragment rewards.</p>
+                        <p><strong>Batteries:</strong> Restore time energy instantly.</p>
+                    </div>
+                    <div class="archives-card">
+                        <h3>MISSION FLOW</h3>
+                        <p>Difficulty selection comes first. Then choose a world, pick your agent, and deploy.</p>
+                        <p>Each world has its own level chain and visual theme.</p>
+                    </div>
                 </div>
             </div>
-            <button class="menu-btn" style="margin-top: 30px;" onclick="hideControls()">BACK</button>
+            <button class="menu-btn secondary" onclick="hideControls()">DISCONNECT</button>
+        </div>
+
+        <!-- Level Builder Screen -->
+        <div id="levelBuilderScreen" class="screen-overlay screen-overlay-builder hidden">
+            <h1 class="builder-title">LEVEL BUILDER</h1>
+            <div class="subtitle builder-subtitle">CREATE YOUR TIMELINE</div>
+            <p class="builder-hint">Drag components onto the grid. Click to select, drag to move, Delete key or button to remove. Add Spawn and Temporal Door, then Play Test.</p>
+            <div class="level-builder-layout">
+                <div class="builder-palette">
+                    <h3>COMPONENTS</h3>
+                    <div class="builder-chips">
+                        <div class="builder-chip" draggable="true" data-type="platform">Platform</div>
+                        <div class="builder-chip" draggable="true" data-type="walker">Walker</div>
+                        <div class="builder-chip" draggable="true" data-type="shooter">Shooter</div>
+                        <div class="builder-chip" draggable="true" data-type="orb">Orb</div>
+                        <div class="builder-chip" draggable="true" data-type="gem">Gem</div>
+                        <div class="builder-chip" draggable="true" data-type="battery">Battery</div>
+                        <div class="builder-chip" draggable="true" data-type="spikes">Spikes</div>
+                        <div class="builder-chip" draggable="true" data-type="goal">Temporal Door</div>
+                        <div class="builder-chip" draggable="true" data-type="spawn">Spawn</div>
+                    </div>
+                </div>
+                <div class="builder-canvas-wrap">
+                    <canvas id="builderCanvas" width="900" height="550"></canvas>
+                </div>
+            </div>
+            <div class="builder-actions">
+                <button class="menu-btn" onclick="startBuilderLevel()">PLAY TEST</button>
+                <button class="menu-btn secondary" onclick="deleteBuilderSelected()">DELETE SELECTED</button>
+                <button class="menu-btn secondary" onclick="clearBuilderLevel()">CLEAR</button>
+                <button class="menu-btn secondary" onclick="hideLevelBuilder()">BACK</button>
+            </div>
         </div>
 
         <!-- Character Selection Screen -->
         <div id="characterScreen" class="screen-overlay hidden">
-            <h1>SELECT CHARACTER</h1>
-            <div id="characterList" class="character-grid">
-                <!-- Populated by JS -->
-            </div>
-            <div id="characterStats" class="character-stats">
-                <h2 id="charName">Character Name</h2>
-                <p id="charDesc">Description goes here</p>
-                <div class="stat-bars">
-                    <div class="stat-row">
-                        <span>SPEED</span>
-                        <div class="stat-bar">
-                            <div id="statSpeed" style="width: 50%"></div>
+            <h1>CHRONO GUARDIANS</h1>
+            <div class="subtitle" id="characterSubtitle">SELECT AGENT TO DEPLOY</div>
+            <div class="character-layout">
+                <div id="characterList" class="character-grid">
+                    <!-- Populated by JS -->
+                </div>
+                <div id="characterStats" class="character-stats">
+                    <h2 id="charName">AGENT NAME</h2>
+                    <p id="charDesc">Agent dossier loading...</p>
+                    <div class="stat-bars">
+                        <div class="stat-row">
+                            <span class="stat-label">VELOCITY</span>
+                            <div class="stat-bar">
+                                <div id="statSpeed" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">GRAVITY</span>
+                            <div class="stat-bar">
+                                <div id="statJump" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">VITALITY</span>
+                            <div class="stat-bar">
+                                <div id="statHealth" style="width: 50%"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="stat-row">
-                        <span>JUMP</span>
-                        <div class="stat-bar">
-                            <div id="statJump" style="width: 50%"></div>
-                        </div>
-                    </div>
-                    <div class="stat-row">
-                        <span>HEALTH</span>
-                        <div class="stat-bar">
-                            <div id="statHealth" style="width: 50%"></div>
-                        </div>
+                    <div class="character-actions">
+                        <button class="menu-btn" onclick="confirmCharacter()">DEPLOY AGENT</button>
+                        <button class="menu-btn secondary" onclick="backFromCharacterSelect()">CHANGE WORLD</button>
                     </div>
                 </div>
-                <button class="menu-btn" onclick="confirmCharacter()">SELECT AGENT</button>
             </div>
         </div>
 
@@ -100,56 +212,53 @@
         <div id="levelIntro" class="screen-overlay hidden">
             <h2 id="levelNumber">LEVEL 1</h2>
             <h1 id="levelName">PREHISTORIC ERA</h1>
-            <p class="level-desc" id="levelDesc">Navigate the primordial landscape and collect the first Temporal
-                Fragment.</p>
+            <p class="level-desc" id="levelDesc">Accessing temporal data...</p>
         </div>
 
         <!-- Pause Screen -->
         <div id="pauseScreen" class="screen-overlay hidden">
             <h1>PAUSED</h1>
-            <button class="menu-btn" onclick="resumeGame()">RESUME</button>
-            <button class="menu-btn secondary" onclick="restartLevel()">RESTART LEVEL</button>
-            <button class="menu-btn secondary" onclick="quitToMenu()">QUIT TO MENU</button>
+            <div class="subtitle">TIME IS FROZEN</div>
+            <button class="menu-btn" onclick="resumeGame()">RE-STABILIZE</button>
+            <button class="menu-btn secondary" onclick="restartLevel()">RE-LOAD POINT</button>
+            <button class="menu-btn secondary" onclick="quitToMenu()">ABORT MISSION</button>
         </div>
 
         <!-- Death Screen -->
         <div id="deathScreen" class="screen-overlay hidden">
-            <h1>TIMELINE COLLAPSED</h1>
-            <p class="death-message">A temporal paradox has occurred. The timeline must be restored.</p>
-            <button class="menu-btn" onclick="restartLevel()">TRY AGAIN</button>
-            <button class="menu-btn secondary" onclick="quitToMenu()">QUIT TO MENU</button>
+            <h1>TIMELINE FRACTURE</h1>
+            <p class="death-message">Temporal paradox detected. Integrity at 0%.</p>
+            <button class="menu-btn" onclick="restartLevel()">RESTORE POINT</button>
+            <button class="menu-btn secondary" onclick="quitToMenu()">END SIMULATION</button>
         </div>
 
         <!-- Level Complete Screen -->
         <div id="winScreen" class="screen-overlay hidden">
-            <h1>FRAGMENT SECURED</h1>
+            <h1>FRAGMENT SYNCED</h1>
             <div class="stats">
                 <div class="stat-row">
-                    <span class="stat-label">Time</span>
+                    <span class="stat-label">JUMP TIME</span>
                     <span class="stat-value" id="levelTime">0:00</span>
                 </div>
                 <div class="stat-row">
-                    <span class="stat-label">Orbs Collected</span>
+                    <span class="stat-label">FRAGMENTS</span>
                     <span class="stat-value" id="levelOrbs">0/0</span>
                 </div>
                 <div class="stat-row">
-                    <span class="stat-label">Level Score</span>
+                    <span class="stat-label">SYNC SCORE</span>
                     <span class="stat-value" id="levelScore">0</span>
                 </div>
             </div>
-            <button class="menu-btn" onclick="nextLevel()">CONTINUE</button>
+            <button class="menu-btn" onclick="nextLevel()">NEXT JUMP</button>
         </div>
 
         <!-- Victory Screen -->
         <div id="victoryScreen" class="screen-overlay hidden">
             <h1>TIMELINE RESTORED</h1>
-            <p class="victory-message">
-                Against all odds, you've collected all Temporal Fragments and restored
-                the timeline. History is safe once more, thanks to you, Agent Zero.
-            </p>
-            <div style="color: #888; font-size: 12px;">FINAL SCORE</div>
+            <p class="victory-message">All temporal fragments synchronized. Reality has been stabilized.</p>
+            <div class="total-label">TOTAL SYNC RATE</div>
             <div class="final-score" id="finalScore">0</div>
-            <button class="menu-btn" onclick="quitToMenu()">MAIN MENU</button>
+            <button class="menu-btn" onclick="quitToMenu()">MAIN ARCHIVES</button>
         </div>
     </div>
 
@@ -163,6 +272,7 @@
     <script src="js/levels.js"></script>
     <script src="js/player.js"></script>
     <script src="js/level-loader.js"></script>
+    <script src="js/level-builder.js"></script>
     <script src="js/screens.js"></script>
     <script src="js/update.js"></script>
     <script src="js/render.js"></script>

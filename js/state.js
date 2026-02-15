@@ -7,6 +7,9 @@ let levelTime = 0;
 let screenShake = 0;
 let screenFlash = 0;
 let screenFlashColor = '#fff';
+let activeWorld = null;
+let levels = [];
+let selectedWorldId = 'chronos-core';
 
 // Time mechanics
 let timeScale = 1;
@@ -40,4 +43,6 @@ let collectedCount = 0;
 let totalCollectibles = 0;
 let particles = [];
 let selectedCharacter = null;
-
+let gameMode = 'normal'; // normal, master, god
+let isBuilderTest = false;
+let pendingBuilderLevel = null;

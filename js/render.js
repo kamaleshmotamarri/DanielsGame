@@ -31,6 +31,7 @@ function draw() {
 
 function drawBackground() {
     const colors = currentLevelData ? currentLevelData.bgGradient : ['#1a0a2e', '#2d1b4e', '#1a2a1a'];
+    const worldId = activeWorld ? activeWorld.id : 'chronos-core';
     const grad = ctx.createLinearGradient(0, 0, 0, HEIGHT);
     grad.addColorStop(0, colors[0]);
     grad.addColorStop(0.5, colors[1]);
@@ -38,20 +39,42 @@ function drawBackground() {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    const time = performance.now() / 50;
-    for (let i = 0; i < 60; i++) {
-        const x = ((i * 47 + time * 0.1) % (WIDTH + 20)) - 10;
-        const y = (i * 73) % HEIGHT;
-        const size = (i % 3) + 1;
-        ctx.fillRect(x, y, size, size);
-    }
+    const time = performance.now() / 1000;
 
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-    for (let i = 0; i < 40; i++) {
-        const x = ((i * 61 + time * 0.05) % (WIDTH + 20)) - 10;
-        const y = (i * 89 + 50) % HEIGHT;
-        ctx.fillRect(x, y, 1, 1);
+    if (worldId === 'aether-frost') {
+        ctx.fillStyle = 'rgba(220, 245, 255, 0.45)';
+        for (let i = 0; i < 90; i++) {
+            const drift = Math.sin(time * 1.5 + i) * 8;
+            const x = (i * 37 + time * 28 + drift) % (WIDTH + 40) - 20;
+            const y = (i * 59 + time * 42) % (HEIGHT + 20) - 10;
+            const r = (i % 3) + 1;
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    } else if (worldId === 'inferno-forge') {
+        for (let i = 0; i < 65; i++) {
+            const x = (i * 43 + time * 36) % (WIDTH + 30) - 15;
+            const y = HEIGHT - ((i * 71 + time * 55) % (HEIGHT + 40));
+            const alpha = 0.2 + ((i % 4) * 0.1);
+            ctx.fillStyle = 'rgba(255, 170, 90, ' + alpha + ')';
+            ctx.fillRect(x, y, 2, 2 + (i % 3));
+        }
+    } else {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        for (let i = 0; i < 60; i++) {
+            const x = ((i * 47 + time * 5) % (WIDTH + 20)) - 10;
+            const y = (i * 73) % HEIGHT;
+            const size = (i % 3) + 1;
+            ctx.fillRect(x, y, size, size);
+        }
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        for (let i = 0; i < 40; i++) {
+            const x = ((i * 61 + time * 3) % (WIDTH + 20)) - 10;
+            const y = (i * 89 + 50) % HEIGHT;
+            ctx.fillRect(x, y, 1, 1);
+        }
     }
 }
 
@@ -406,6 +429,9 @@ function drawBoss() {
 }
 
 function drawUI() {
+    const world = activeWorld || { name: 'CHRONOS CORE' };
+    const hudAccent = (world && world.cardAccent) ? world.cardAccent : currentLevelData.accentColor;
+
     for (let i = 0; i < player.maxHealth; i++) {
         const x = 20 + i * 35;
         const y = 20;
@@ -461,7 +487,7 @@ function drawUI() {
     ctx.fillText('SCORE', WIDTH - 20, 20);
     ctx.textAlign = 'left';
 
-    ctx.fillStyle = currentLevelData.accentColor;
+    ctx.fillStyle = hudAccent;
     ctx.font = '12px Orbitron';
     ctx.fillText(collectedCount + '/' + totalCollectibles, WIDTH - 60, 55);
     ctx.beginPath();
@@ -471,6 +497,9 @@ function drawUI() {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     ctx.font = '11px Orbitron';
     ctx.fillText(currentLevelData.name, 20, HEIGHT - 15);
+    ctx.font = '10px Orbitron';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.fillText(world.name + ' [' + (currentLevel + 1) + '/' + levels.length + ']', 20, HEIGHT - 30);
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     ctx.textAlign = 'right';
     ctx.fillText(formatTime(levelTime), WIDTH - 20, HEIGHT - 15);
