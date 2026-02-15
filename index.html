@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronoQuest - Master Time, Save the Timeline</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="gameContainer">
+        <canvas id="game"></canvas>
+
+        <!-- Title Screen -->
+        <div id="titleScreen" class="screen-overlay">
+            <h1>CHRONOQUEST</h1>
+            <div class="subtitle">MASTER TIME • SAVE THE TIMELINE</div>
+            <button class="menu-btn" onclick="showCharacterSelect()">NEW GAME</button>
+            <button class="menu-btn secondary" onclick="showControls()">HOW TO PLAY</button>
+            <div class="version-tag">v1.0.0 | © 2025</div>
+        </div>
+
+        <!-- Story Screen -->
+        <div id="storyScreen" class="screen-overlay hidden">
+            <div class="story-text">
+                The year is 2157. A catastrophic experiment at the <span>Temporal Research Institute</span>
+                has shattered the timeline, creating rifts across history.<br><br>
+                You are <span>Agent Zero</span>, the last Chrono Guardian. Armed with experimental
+                <span>time manipulation technology</span>, you must travel through the ages to collect
+                <span>Temporal Fragments</span> and restore the timeline before reality collapses.<br><br>
+                The fate of all existence rests in your hands.
+            </div>
+            <button class="menu-btn" onclick="startGame()">BEGIN MISSION</button>
+        </div>
+
+        <!-- Controls Screen -->
+        <div id="controlsScreen" class="screen-overlay hidden">
+            <div class="controls-box" style="min-width: 400px;">
+                <h3>CONTROLS</h3>
+                <div class="control-row">
+                    <span>Move</span>
+                    <span><span class="control-key">A</span><span class="control-key">D</span> or <span
+                            class="control-key">←</span><span class="control-key">→</span></span>
+                </div>
+                <div class="control-row">
+                    <span>Jump</span>
+                    <span><span class="control-key">W</span> or <span class="control-key">SPACE</span></span>
+                </div>
+                <div class="control-row">
+                    <span>Time Slow</span>
+                    <span><span class="control-key">SHIFT</span></span>
+                </div>
+                <div class="control-row">
+                    <span>Time Rewind</span>
+                    <span><span class="control-key">R</span></span>
+                </div>
+                <div class="control-row">
+                    <span>Pause</span>
+                    <span><span class="control-key">ESC</span></span>
+                </div>
+            </div>
+            <button class="menu-btn" style="margin-top: 30px;" onclick="hideControls()">BACK</button>
+        </div>
+
+        <!-- Character Selection Screen -->
+        <div id="characterScreen" class="screen-overlay hidden">
+            <h1>SELECT CHARACTER</h1>
+            <div id="characterList" class="character-grid">
+                <!-- Populated by JS -->
+            </div>
+            <div id="characterStats" class="character-stats">
+                <h2 id="charName">Character Name</h2>
+                <p id="charDesc">Description goes here</p>
+                <div class="stat-bars">
+                    <div class="stat-row">
+                        <span>SPEED</span>
+                        <div class="stat-bar">
+                            <div id="statSpeed" style="width: 50%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <span>JUMP</span>
+                        <div class="stat-bar">
+                            <div id="statJump" style="width: 50%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <span>HEALTH</span>
+                        <div class="stat-bar">
+                            <div id="statHealth" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="menu-btn" onclick="confirmCharacter()">SELECT AGENT</button>
+            </div>
+        </div>
+
+        <!-- Level Intro -->
+        <div id="levelIntro" class="screen-overlay hidden">
+            <h2 id="levelNumber">LEVEL 1</h2>
+            <h1 id="levelName">PREHISTORIC ERA</h1>
+            <p class="level-desc" id="levelDesc">Navigate the primordial landscape and collect the first Temporal
+                Fragment.</p>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pauseScreen" class="screen-overlay hidden">
+            <h1>PAUSED</h1>
+            <button class="menu-btn" onclick="resumeGame()">RESUME</button>
+            <button class="menu-btn secondary" onclick="restartLevel()">RESTART LEVEL</button>
+            <button class="menu-btn secondary" onclick="quitToMenu()">QUIT TO MENU</button>
+        </div>
+
+        <!-- Death Screen -->
+        <div id="deathScreen" class="screen-overlay hidden">
+            <h1>TIMELINE COLLAPSED</h1>
+            <p class="death-message">A temporal paradox has occurred. The timeline must be restored.</p>
+            <button class="menu-btn" onclick="restartLevel()">TRY AGAIN</button>
+            <button class="menu-btn secondary" onclick="quitToMenu()">QUIT TO MENU</button>
+        </div>
+
+        <!-- Level Complete Screen -->
+        <div id="winScreen" class="screen-overlay hidden">
+            <h1>FRAGMENT SECURED</h1>
+            <div class="stats">
+                <div class="stat-row">
+                    <span class="stat-label">Time</span>
+                    <span class="stat-value" id="levelTime">0:00</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Orbs Collected</span>
+                    <span class="stat-value" id="levelOrbs">0/0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Level Score</span>
+                    <span class="stat-value" id="levelScore">0</span>
+                </div>
+            </div>
+            <button class="menu-btn" onclick="nextLevel()">CONTINUE</button>
+        </div>
+
+        <!-- Victory Screen -->
+        <div id="victoryScreen" class="screen-overlay hidden">
+            <h1>TIMELINE RESTORED</h1>
+            <p class="victory-message">
+                Against all odds, you've collected all Temporal Fragments and restored
+                the timeline. History is safe once more, thanks to you, Agent Zero.
+            </p>
+            <div style="color: #888; font-size: 12px;">FINAL SCORE</div>
+            <div class="final-score" id="finalScore">0</div>
+            <button class="menu-btn" onclick="quitToMenu()">MAIN MENU</button>
+        </div>
+    </div>
+
+    <!-- Scripts: order matters (dependencies) -->
+    <script src="js/constants.js"></script>
+    <script src="js/characters.js"></script>
+    <script src="js/setup.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/level-loader.js"></script>
+    <script src="js/screens.js"></script>
+    <script src="js/update.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
